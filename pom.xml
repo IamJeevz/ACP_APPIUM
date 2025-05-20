@@ -40,6 +40,13 @@
 
 
 
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20240303</version> <!-- Or latest -->
+        </dependency>
+
+
         <!-- SLF4J for logging -->
         <dependency>
             <groupId>org.slf4j</groupId>

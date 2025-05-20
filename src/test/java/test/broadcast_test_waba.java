@@ -41,10 +41,9 @@ public class broadcast_test_waba extends baseclass {
         bc.baseUpload(System.getProperty("user.dir") + "\\files\\waba_base.xlsx");
         bc.start_action_bC(b_cast_name);
         Thread.sleep(5000);
-        String waba_msg=wa_msg.get_waba_last_msg();
-//
-//        System.out.println("preview_data>>>"+preview_data);
-//        System.out.println("waba_msg>>>"+waba_msg);
+        System.out.println("preview_data>>>"+preview_data);
+        String waba_msg=wa_msg.get_bc_waba_last_msg();
+        System.out.println("waba_msg>>>"+waba_msg);
         if(preview_data.equals(waba_msg))
         {
             System.out.println("Test Case passed: Broadcast Received on WhatsApp succesfully");
