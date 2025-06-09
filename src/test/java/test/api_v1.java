@@ -20,11 +20,11 @@ public class api_v1 extends baseclass {
 
 
     public String domain = "https://buzib.com/ACP";
-    public  String username = "jeevan";
+    public  String username = "meta";
     public  String password = "Admin@1234";
-    public  String waba_num="5116045163";
+    public  String waba_num="919072670612";
     public  String to_num="918547671877";
-    public  String waba_fetch_last_msg="360";
+    public  String waba_fetch_last_msg="Gupshup ACP";
     public  String serviceKey="";
     public  String audio_url_mp3="https://prutech.org/MediaServer/api/Media/Data/f39ae9ff3a/2mb1.mp3";
     public  String audio_url_mp4="https://tmpfiles.org/dl/28182452/3mb1.opus";
@@ -35,7 +35,7 @@ public class api_v1 extends baseclass {
         AppiumbaseSetup();
     }
 
-//    @Test(priority = 1)
+    @Test(priority = 1)
     public  void audio_mp3() throws Exception {
         v1_api_page v1=new v1_api_page();
         lm=new waba_fetch_last_msg(appiumDriver);
@@ -68,7 +68,7 @@ public class api_v1 extends baseclass {
         }
     }
 
-    @Test(priority = 2)
+//    @Test(priority = 2)
     public  void audio_opus() throws Exception {
         String fileName="";
         v1_api_page v1=new v1_api_page();

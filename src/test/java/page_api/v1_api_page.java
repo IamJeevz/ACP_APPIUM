@@ -73,6 +73,7 @@ public class v1_api_page {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject obj = jsonArray.getJSONObject(i);
                 if (obj.getString("waba_number").equals(wabaNumber)) {
+                    System.out.println("ServiceKey="+obj.getString("service_key"));
                     return obj.getString("service_key");
                 }
             }
