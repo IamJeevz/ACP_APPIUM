@@ -37,19 +37,14 @@ public class waba_fetch_last_msg {
 
     public String get_waba_last_msg() throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, 10);
-        wait.until(ExpectedConditions.visibilityOf(driver.findElement(con_row))).click();
-        Thread.sleep(3500);
-        List<MobileElement> ci = driver.findElements(close_sugg);
-        if (ci.size() > 0) {
-            driver.findElement(close_sugg).click();
-        }
-
         List<MobileElement> lws = driver.findElements(last_text_row);
         String final_text_path = "(//android.widget.TextView[@resource-id=\"com.whatsapp:id/message_text\"] | //android.widget.TextView[@resource-id=\"com.whatsapp:id/description\"])["+lws.size()+"]";
 //        System.out.println("final_text_path="+final_text_path);
         String last_text = driver.findElement(By.xpath(final_text_path)).getText();
         return last_text;
     }
+
+
 
 
     public String get_bc_waba_last_msg() throws InterruptedException {
@@ -83,7 +78,7 @@ public class waba_fetch_last_msg {
     public  void clear_chats() throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, 10);
         wait.until(ExpectedConditions.visibilityOf(driver.findElement(more_options))).click();
-        Thread.sleep(2500);
+        Thread.sleep(3000);
         wait.until(ExpectedConditions.visibilityOf(driver.findElement(more_dropdown))).click();
         wait.until(ExpectedConditions.visibilityOf(driver.findElement(clearchats_opt))).click();
         wait.until(ExpectedConditions.visibilityOf(driver.findElement(confirm_clear_chat))).click();
@@ -93,7 +88,7 @@ public class waba_fetch_last_msg {
     public String fetch_audio() throws InterruptedException {
         boolean a=true;
         WebDriverWait wait = new WebDriverWait(driver, 10);
-        Thread.sleep(10000);
+        Thread.sleep(20000);
         List<MobileElement> audio_view_bar=driver.findElements(audio_player_view);
         if(audio_view_bar.isEmpty())
         {

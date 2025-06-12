@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 import page_api.v1_api_page;
 import page_appium.waba_fetch_last_msg;
 import page_selenium.login;
+import utils.excel_read;
 import utils.shell_commands;
 
 import java.io.BufferedReader;
@@ -19,53 +20,93 @@ import java.util.List;
 public class api_v1 extends baseclass {
 
 
-    public String domain = "https://buzib.com/ACP";
+    public  String domain = "https://buzib.com/ACP";
     public  String username = "meta";
     public  String password = "Admin@1234";
     public  String waba_num="919072670612";
     public  String to_num="918547671877";
-    public  String waba_fetch_last_msg="Gupshup ACP";
+    public  String waba_fetch_contact="Gupshup ACP";
+    public  String token="";
     public  String serviceKey="";
-    public  String audio_url_mp3="https://prutech.org/MediaServer/api/Media/Data/f39ae9ff3a/2mb1.mp3";
-    public  String audio_url_mp4="https://tmpfiles.org/dl/28182452/3mb1.opus";
+    public String excel_file_path=".\\files\\file_api_auto.xlsx";
+  //  public  String audio_url_mp3="https://prutech.org/MediaServer/api/Media/Data/f39ae9ff3a/2mb1.mp3";
+    public  String audio_url_mp4="http://tmpfiles.org/1562601/3mb1.opus";
+    public  String text_mst_content="Welcome to ACP https://openai.com/index/chatgpt/";
     waba_fetch_last_msg lm;
     shell_commands sh;
+    excel_read exl = new excel_read();
+
+
+
     @BeforeTest
     public void startUp() throws MalformedURLException {
         AppiumbaseSetup();
+    }
+
+    @Test(priority = 0) // Donot comment this test (Using for Token calling and service key fetching)
+    public void token_service()
+    {
+        v1_api_page v1=new v1_api_page();
+        token = v1.getAuthToken("https://buzib.com/ACP",username,password);
+        System.out.println("Token: " + token);
+        if (token != null) {
+            serviceKey=v1.getServiceKeyByWaba(domain, token,waba_num);
+            //System.out.println("service>>>"+serviceKey);
+        }
     }
 
     @Test(priority = 1)
     public  void audio_mp3() throws Exception {
         v1_api_page v1=new v1_api_page();
         lm=new waba_fetch_last_msg(appiumDriver);
-        String token = v1.getAuthToken("https://buzib.com/ACP",username,password);
-        System.out.println("Token: " + token);
-        if (token != null) {
-            serviceKey=v1.getServiceKeyByWaba(domain, token,waba_num);
+        lm.open_chat(waba_fetch_contact);
 
-        }
-        //System.out.println("service>>>"+serviceKey);
-        lm.open_chat(waba_fetch_last_msg);
-        lm.clear_chats();
-        v1.sendAudioMessage(domain,waba_num,to_num,token,serviceKey,audio_url_mp3);
-        Thread.sleep(1500);
-        String name=lm.fetch_audio();
-        if(name==null)
+        for(int i=1; i<=3;i++)
         {
-            Assert.fail("Audio Message did not Received on Device");
-        }
-        else
-        {
-            List<String> name_split = List.of(name.split("\\."));
-            if(name_split.get(1).equals("mp3"))
+            lm.clear_chats();
+            String audio_type=exl.cellValues(excel_file_path,"Sheet1",i,0);
+            String audio_url=exl.cellValues(excel_file_path,"Sheet1",i,1);
+            System.out.println(audio_type + ">>>" +audio_url);
+            v1.sendAudioMessage(domain,waba_num,to_num,token,serviceKey,audio_url);
+            Thread.sleep(1500);
+            String name=lm.fetch_audio();
+            if(name==null)
             {
-                System.out.println("Test Passed: mp3 File received");
+                Assert.fail("Audio Message did not Received on Device");
             }
-            else {
-                Assert.fail("Received file other than mp3 or file not received");
+            else
+            {
+                List<String> name_split = List.of(name.split("\\."));
+                if(name_split.get(1).equals(audio_type))
+                {
+                    System.out.println("Test Passed: "+audio_type+" File received");
+                }
+                else {
+                    Assert.fail("Received file other than "+audio_type+" or file not received");
+                }
             }
         }
+
+//        lm.clear_chats();
+//        String audio_url_mp3=exl.cellValues(excel_file_path,"Sheet 1",1,1);
+//        v1.sendAudioMessage(domain,waba_num,to_num,token,serviceKey,audio_url_mp3);
+//        Thread.sleep(1500);
+//        String name=lm.fetch_audio();
+//        if(name==null)
+//        {
+//            Assert.fail("Audio Message did not Received on Device");
+//        }
+//        else
+//        {
+//            List<String> name_split = List.of(name.split("\\."));
+//            if(name_split.get(1).equals("mp3"))
+//            {
+//                System.out.println("Test Passed: mp3 File received");
+//            }
+//            else {
+//                Assert.fail("Received file other than mp3 or file not received");
+//            }
+//        }
     }
 
 //    @Test(priority = 2)
@@ -75,14 +116,7 @@ public class api_v1 extends baseclass {
         sh= new shell_commands();
         sh.delete_files();
         lm=new waba_fetch_last_msg(appiumDriver);
-        String token = v1.getAuthToken("https://buzib.com/ACP",username,password);
-        System.out.println("Token: " + token);
-        if (token != null) {
-            serviceKey=v1.getServiceKeyByWaba(domain, token,waba_num);
-
-        }
-        //System.out.println("service>>>"+serviceKey);
-        lm.open_chat(waba_fetch_last_msg);
+        lm.open_chat(waba_fetch_contact);
 //        lm.clear_chats();
         v1.sendAudioMessage(domain,waba_num,to_num,token,serviceKey,audio_url_mp4);
         Thread.sleep(30000);
@@ -92,5 +126,34 @@ public class api_v1 extends baseclass {
 
 
     }
+
+//    @Test(priority = 3)
+    public  void text_preview() throws Exception {
+        v1_api_page v1=new v1_api_page();
+        lm=new waba_fetch_last_msg(appiumDriver);
+        lm.open_chat(waba_fetch_contact);
+        lm.clear_chats();
+        v1.sendText(domain,waba_num,to_num,token,serviceKey,text_mst_content,true);
+        Thread.sleep(10000);
+        String rec_text=lm.get_waba_last_msg();
+//        System.out.println(rec_text);
+
+        if(rec_text==null)
+        {
+            Assert.fail("Text Message did not Received on Device");
+        }
+        else
+        {
+
+            if(rec_text.equals(text_mst_content))
+            {
+                System.out.println("Test Passed: Text is received and the content is same");
+            }
+            else {
+                Assert.fail("Text Message Received does not match");
+            }
+        }
+    }
+
 
 }
