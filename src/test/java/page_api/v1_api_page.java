@@ -177,4 +177,52 @@ public class v1_api_page {
         }
     }
 
+    public void send_image(String domain,String from_no,String to_no, String token, String serviceKey,String image_url,String image_caption)
+    {
+        try {
+            URL url = new URL(domain + "/api/v1/whatsapp/send-image");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setRequestProperty("service_key", serviceKey);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
+
+            // JSON payload
+            JSONObject payload = new JSONObject();
+            payload.put("From", from_no);
+            payload.put("To", to_no);
+            payload.put("MessageId", generateMessageId());
+
+            JSONObject content = new JSONObject();
+            content.put("MediaUrl", image_url);
+            if(image_caption.length()>0) {
+                content.put("Caption", image_caption);
+            }
+            payload.put("Content", content);
+
+            payload.put("CallBackData", "Callback data");
+
+
+            // Send request
+            OutputStream os = conn.getOutputStream();
+            os.write(payload.toString().getBytes());
+            os.flush();
+            os.close();
+
+            // Read response
+            InputStream is = conn.getResponseCode() >= 200 && conn.getResponseCode() < 300
+                    ? conn.getInputStream()
+                    : conn.getErrorStream();
+
+            String response = new BufferedReader(new InputStreamReader(is))
+                    .lines().reduce("", (acc, line) -> acc + line);
+
+            System.out.println("Send image Response: " + response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     }

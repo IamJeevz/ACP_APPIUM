@@ -118,4 +118,9 @@ public class waba_fetch_last_msg {
             return f_name;
         }
     }
+
+    public void fetch_image(boolean caption)
+    {
+
+    }
 }
